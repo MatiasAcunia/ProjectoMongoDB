@@ -47,16 +47,20 @@ Document curso5 = new Document("_id", new ObjectId())
 
 
 
-if (cursos.countDocuments() == 0) {
-    //inserto los cursos almacenandolos en una variable
-    InsertOneResult resultado1 = cursos.insertOne(curso1);
-    InsertOneResult resultado2 = cursos.insertOne(curso2);
-    InsertOneResult resultado3 = cursos.insertOne(curso3);
+    if (cursos.countDocuments() == 0) {
+        //inserto los cursos almacenandolos en una variable
+        InsertOneResult resultado1 = cursos.insertOne(curso1);
+        InsertOneResult resultado2 = cursos.insertOne(curso2);
+        InsertOneResult resultado3 = cursos.insertOne(curso3);
+        InsertOneResult resultado4 = cursos.insertOne(curso4);
+        InsertOneResult resultado5 = cursos.insertOne(curso5);
 
-    //imprime los _id generados
-    System.out.println(resultado1.getInsertedId());
-    System.out.println(resultado2.getInsertedId());
-    System.out.println(resultado3.getInsertedId());
-} else {
-    System.out.println("Los cursos ya estaban cargados");
-}
+        //imprime los _id generados
+        System.out.println(resultado1.getInsertedId());
+        System.out.println(resultado2.getInsertedId());
+        System.out.println(resultado3.getInsertedId());
+        System.out.println(resultado4.getInsertedId());
+        System.out.println(resultado5.getInsertedId());
+    } else {
+        System.out.println("Los cursos ya estaban cargados");
+    }
