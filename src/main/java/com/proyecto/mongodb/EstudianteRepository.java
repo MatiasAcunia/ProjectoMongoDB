@@ -1,3 +1,28 @@
+import com.mongodb.ConnectionString;
+import com.mongodb.MongoClientSettings;
+import com.mongodb.client.*;
+import org.bson.Document;
+import org.bson.types.ObjectId;
+
+import java.time.*;
+import java.util.*;
+
+
+    //accedo a curso_nosql
+    MongoDatabase database =
+    mongoClient.getDatabase("curso_nosql");
+
+    List<String> existentes = database.listCollectionNames().into(new ArrayList<>());
+
+    if (!existentes.contains("estudiantes_java")) {
+        database.createCollection("estudiantes_java");
+        System.out.println("Colección estudiantes_java creada");
+    }
+
+    MongoCollection<Document> estudiantes = database.getCollection("estudiantes_java");
+
+
+
 
 List<Document> estudiantesL = List.of(
 
