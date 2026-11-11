@@ -28,19 +28,24 @@ public void consultarCursosEstudiante(String id){
 }
 
 public void buscarEstudiantesPorCiudad(String ciudad){
+    //creo filtro con la ciudad indicada
     Bson filtro = Filters.eq("Direccion.ciudad", ciudad);
 
-    collection.find(filtro)
+    //recupero cada estudiante con el filtro aplicado
+    estudiante.find(filtro)
             .forEach(estudiante →
                     System.out.println(estudiante.toJson()));
 }
 
 
 public void BuscarEstudiantesPorCoincidencia(String coincidencia){
+    //creo filtro con la coincidencia indicada
     Bson filtro = Filters.regex("Apellido", coincidencia, "i");
 
+    //obtengo los estudiantes que cumplen el filtro
     FindIterable<Document> estudiantesIT = estudiantes.find(filtro);
 
+    //imprimo cada estudiante
     for (Document estudiante : estudiantesIT) {
         System.out.println(estudiante.toJson());
     }
