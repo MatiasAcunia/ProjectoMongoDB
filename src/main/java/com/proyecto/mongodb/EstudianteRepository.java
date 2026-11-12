@@ -197,7 +197,6 @@ class EstudianteRepository {
         }
     }
 
-    // 1. Registrar un estudiante
     public void registrarEstudiante(String nombre, String apellido, String email, int edad,
                                     String ciudad, String departamento, Date fechaRegistro,
                                     List<String> cursosCodigos) {
@@ -230,7 +229,6 @@ class EstudianteRepository {
         System.out.println("Estudiante registrado con ID: " + resultado.getInsertedId());
     }
 
-    // 2. Listar todos los estudiantes
     public void listarEstudiantes() {
         try (MongoCursor<Document> cursor = estudiantes.find().iterator()) {
             while (cursor.hasNext()) {
@@ -240,7 +238,6 @@ class EstudianteRepository {
         }
     }
 
-    // 3. Buscar un estudiante por correo electrónico
     public Document buscarEstudiantePorEmail(String email) {
         if (email == null || email.isBlank()) {
             return null;
@@ -249,7 +246,6 @@ class EstudianteRepository {
         return estudiantes.find(filtro).first();
     }
 
-    // 4. Modificar la edad de un estudiante (buscando por correo electrónico)
     public void modificarEdadEstudiante(String email, int nuevaEdad) {
         if (email == null || email.isBlank() || nuevaEdad <= 0) {
             System.out.println("Datos inválidos.");
@@ -268,7 +264,6 @@ class EstudianteRepository {
         }
     }
 
-    // 5. Eliminar un estudiante por correo electrónico, previa confirmación
     public void eliminarEstudiante(String email, boolean confirmacion) {
         if (email == null || email.isBlank()) {
             System.out.println("Correo inválido.");

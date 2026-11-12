@@ -9,7 +9,14 @@ import java.util.Scanner;
 public class Main {
 
     public static void main(String[] args) {
-        InscripcionesService servicio = new InscripcionesService();
+        InscripcionesService servicio;
+
+        try {
+            servicio = new InscripcionesService();
+        } catch (IllegalStateException e) {
+            System.out.println(e.getMessage());
+            return;
+        }
 
         try (Scanner sc = new Scanner(System.in)) {
             servicio.cargarDatosPorDefecto();
@@ -71,8 +78,12 @@ public class Main {
                             System.out.print("Correo: ");
                             String email = sc.nextLine();
                             System.out.print("¿Confirmar eliminación? (s/n): ");
-                            boolean confirmar = sc.nextLine().trim().equalsIgnoreCase("s");
-                            servicio.eliminarEstudiante(email, confirmar);
+                            String respuesta = sc.nextLine().trim();
+                            if (respuesta.equalsIgnoreCase("s") || respuesta.equalsIgnoreCase("n")) {
+                                servicio.eliminarEstudiante(email, respuesta.equalsIgnoreCase("s"));
+                            } else {
+                                System.out.println("Respuesta inválida.");
+                            }
                         }
                         case "6" -> {
                             System.out.print("Código: ");
@@ -127,8 +138,10 @@ public class Main {
                         case "0" -> System.out.println("Saliendo...");
                         default -> System.out.println("Opción inválida.");
                     }
-                } catch (NumberFormatException | DateTimeParseException e) {
-                    System.out.println("Número o fecha inválida.");
+                } catch (NumberFormatException e) {
+                    System.out.println("Número inválido.");
+                } catch (DateTimeParseException e) {
+                    System.out.println("Fecha inválida.");
                 }
 
             } while (!opcion.equals("0"));

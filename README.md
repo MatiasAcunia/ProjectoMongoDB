@@ -21,15 +21,15 @@ La base de datos se selecciona con `MONGODB_DATABASE`. El valor predeterminado e
 mvn clean verify
 ```
 
-## Carga de datos
+## Ejecución
 
 ```bash
-mvn exec:java -Dexec.mainClass=com.proyecto.mongodb.CargarDatos
+mvn exec:java -Dexec.mainClass=com.proyecto.mongodb.Main
 ```
 
 La carga inicial prepara cinco cursos y diez estudiantes de ejemplo. Los datos incluyen estados activos e inactivos, direcciones embebidas, fechas BSON y referencias entre estudiantes y cursos.
 
-Los estudiantes existentes se conservan y los registros de ejemplo se incorporan según su correo electrónico. Los cursos de ejemplo se insertan si la colección de cursos está vacía.
+Los estudiantes existentes se conservan y los registros de ejemplo se incorporan según su correo electrónico. Los cursos de ejemplo se agregan por código si todavía no existen.
 
 ## Estructura
 
@@ -38,5 +38,5 @@ El código fuente Java se encuentra en `src/main/java/com/proyecto/mongodb/`.
 - `Conexion.java`: configuración del cliente MongoDB.
 - `CursoRepository.java`: acceso a la colección de cursos.
 - `EstudianteRepository.java`: acceso a la colección de estudiantes.
-- `InscripcionesService.java`: operaciones de consulta sobre estudiantes y cursos.
-- `CargarDatos.java`: carga inicial de documentos.
+- `InscripcionesService.java`: operaciones de estudiantes, cursos e inscripciones.
+- `Main.java`: menú de consola.
