@@ -290,4 +290,46 @@ class EstudianteRepository {
             System.out.println("No se encontró ningún estudiante registrado con ese correo electrónico.");
         }
     }
+
+    public void buscarMayoresDe(int edad) {
+        if (edad < 0) {
+            System.out.println("Edad inválida.");
+            return;
+        }
+
+        List<Document> resultados = estudiantes.find(Filters.gt("Edad", edad)).into(new ArrayList<>());
+        if (resultados.isEmpty()) {
+            System.out.println("No se encontraron estudiantes.");
+        } else {
+            resultados.forEach(estudiante -> System.out.println(estudiante.toJson()));
+        }
+    }
+
+    public void buscarEstudiantesPorCiudad(String ciudad) {
+        if (ciudad == null || ciudad.isBlank()) {
+            System.out.println("Ciudad inválida.");
+            return;
+        }
+
+        List<Document> resultados = estudiantes.find(Filters.eq("Direccion.ciudad", ciudad.trim())).into(new ArrayList<>());
+        if (resultados.isEmpty()) {
+            System.out.println("No se encontraron estudiantes.");
+        } else {
+            resultados.forEach(estudiante -> System.out.println(estudiante.toJson()));
+        }
+    }
+
+    public void buscarEstudiantesPorApellido(String apellido) {
+        if (apellido == null || apellido.isBlank()) {
+            System.out.println("Apellido inválido.");
+            return;
+        }
+
+        List<Document> resultados = estudiantes.find(Filters.regex("Apellido", java.util.regex.Pattern.quote(apellido.trim()), "i")).into(new ArrayList<>());
+        if (resultados.isEmpty()) {
+            System.out.println("No se encontraron estudiantes.");
+        } else {
+            resultados.forEach(estudiante -> System.out.println(estudiante.toJson()));
+        }
+    }
 }
