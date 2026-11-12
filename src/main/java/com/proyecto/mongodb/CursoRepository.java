@@ -1,34 +1,27 @@
-import com.mongodb.ConnectionString;
-import com.mongodb.MongoClientSettings;
-import com.mongodb.client.*;
+package org.example;
+
+import com.mongodb.client.MongoCollection;
+import com.mongodb.client.MongoCursor;
+import com.mongodb.client.model.Filters;
+import com.mongodb.client.model.Updates;
+import com.mongodb.client.result.InsertOneResult;
 import org.bson.Document;
 import org.bson.types.ObjectId;
+import org.bson.conversions.Bson;
 
-import java.time.*;
-import java.util.*;
+import java.util.Date;
 
+//accedo a curso_nosql
+class CursoRepository {
 
+    private MongoCollection<Document> cursos;
 
-    //accedo a curso_nosql
-    MongoDatabase database =
-    mongoClient.getDatabase("curso_nosql");
-
-    List<String> existentes = database.listCollectionNames().into(new ArrayList<>());
-
-    if (!existentes.contains("cursos_java")) {
-        database.createCollection("cursos_java");
-        System.out.println("Colección cursos_java creada");
+    // Constructor para inicializar la colección (ejemplo)
+    public CursoRepository(MongoCollection<Document> cursos) {
+        this.cursos = cursos;
     }
 
-    MongoCollection<Document> estudiantes = database.getCollection("estudiantes_java");
-
-
-
-
-
-
-class CursoRepository{
-    public void defecto(){
+    public void defecto() {
         //creo los documentos reservando memoria
         Document curso1 = new Document("_id", new ObjectId())
                 .append("Codigo", "CUR01")
@@ -67,16 +60,13 @@ class CursoRepository{
                 .append("FechaInicio", new Date());
 
         Document curso5 = new Document("_id", new ObjectId())
-                .append("Codigo", "CUR04")
+                .append("Codigo", "CUR05")
                 .append("Nombre", "RPL")
                 .append("Descripcion", "Relaciones personales y laborales")
                 .append("CantCreditos", 5)
                 .append("CuposMax", 25)
                 .append("Estado", false)
                 .append("FechaInicio", new Date());
-
-
-
 
         if (cursos.countDocuments() == 0) {
             //inserto los cursos almacenandolos en una variable
@@ -107,8 +97,8 @@ class CursoRepository{
                 .append("Estado", true)
                 .append("FechaInicio", fechainicio);
 
-            InsertOneResult resultado1 = cursos.insertOne(curso1);
-            System.out.println(resultado1.getInsertedId());
+        InsertOneResult resultado1 = cursos.insertOne(curso1);
+        System.out.println(resultado1.getInsertedId());
     }
 
     public void listarCursos(){
@@ -123,18 +113,14 @@ class CursoRepository{
 
     public Document buscarCurso(String id) {
         //construye el filtro
-        Bson filtro = Filters.eq("_id", ObjectId(id));
+        Bson filtro = Filters.eq("_id", new ObjectId(id));
         //retorna el documento
         return cursos.find(filtro).first();
     }
 
     public void modificarCreditos(String id, int creditos){
         cursos.updateOne(
-                eq("_id", id),
-                set("Creditos", creditos));
+                Filters.eq("_id", new ObjectId(id)),
+                Updates.set("CantCreditos", creditos));
     }
 }
-
-
-
-
