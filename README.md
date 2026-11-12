@@ -1,48 +1,42 @@
 # Sistema de gestión académica
 
-Proyecto final NoSQL de Tecnólogo en Informática. Aplicación Java 21, Maven y MongoDB con el driver síncrono 5.13.0. La interfaz de consola principal todavía está en desarrollo.
+Proyecto Java para gestionar estudiantes, cursos y sus relaciones mediante MongoDB.
 
-## Requisitos
+## Tecnologías
 
-- JDK 21
-- Maven 3.9 o compatible
-- Servidor MongoDB accesible desde la máquina
+- Java 21
+- Maven
+- MongoDB
+- MongoDB Java Sync Driver 5.13.0
 
-## Configuración y precarga
+## Configuración
 
-La conexión usa `MONGODB_URI` si está definida; de lo contrario intenta `mongodb://localhost:27017`. La carga inicial usa la base `gestion_academica`, o la indicada en `MONGODB_DATABASE`.
+La conexión utiliza la variable de entorno `MONGODB_URI`. Si no se define, se conecta a `mongodb://localhost:27017`.
 
-Compilar:
+La base de datos se selecciona con `MONGODB_DATABASE`. El valor predeterminado es `gestion_academica`.
+
+## Compilación
 
 ```bash
 mvn clean verify
 ```
 
-Cargar los datos iniciales:
+## Carga de datos
 
 ```bash
 mvn exec:java -Dexec.mainClass=com.proyecto.mongodb.CargarDatos
 ```
 
-Se crean hasta 5 cursos y 10 estudiantes de ejemplo con inscripciones de prueba. La precarga de estudiantes agrega solo los correos que faltan, sin sobrescribir documentos existentes. Los cinco cursos se cargan únicamente si la colección está vacía; los existentes no se modifican. Las fechas de curso de la primera carga son distintas y se guardan como BSON Date.
+La carga inicial prepara cinco cursos y diez estudiantes de ejemplo. Los datos incluyen estados activos e inactivos, direcciones embebidas, fechas BSON y referencias entre estudiantes y cursos.
 
-## Organización
+Los estudiantes existentes se conservan y los registros de ejemplo se incorporan según su correo electrónico. Los cursos de ejemplo se insertan si la colección de cursos está vacía.
 
-- `Conexion`: cliente MongoDB y configuración de conexión.
-- `CursoRepository`: carga inicial y operaciones sobre cursos.
-- `EstudianteRepository`: carga inicial y operaciones sobre estudiantes.
-- `InscripcionesService`: consultas existentes relacionadas con estudiantes y cursos.
-- `CargarDatos`: ejecutable autónomo de precarga.
-- `Main`: pendiente de desarrollar el menú de consola.
+## Estructura
 
-## Modelo documental actual
+El código fuente Java se encuentra en `src/main/java/com/proyecto/mongodb/`.
 
-`estudiantes`: Nombre, Apellido, Email, Edad, Estado, Direccion (ciudad y Departamento), FechaRegistro, Cursos (array de ObjectId).
-
-`cursos`: Codigo, Nombre, Descripcion, CantCreditos, CuposMax, Estado, FechaInicio.
-
-**Pendiente de adecuación a la consigna:** el array de inscripciones debe llamarse `cursosInscriptos` y contener códigos de curso, no ObjectId. También falta completar inscripciones, búsquedas por código, filtro de edad, validación de correos duplicados y menú.
-
-## Entrega
-
-Documentación provisional: `docs/sistema_gestion_academica_borrador.pdf`. Faltan capturas reales de MongoDB Compass, ejecución integral y defensa. Este repositorio todavía no representa un obligatorio completo.
+- `Conexion.java`: configuración del cliente MongoDB.
+- `CursoRepository.java`: acceso a la colección de cursos.
+- `EstudianteRepository.java`: acceso a la colección de estudiantes.
+- `InscripcionesService.java`: operaciones de consulta sobre estudiantes y cursos.
+- `CargarDatos.java`: carga inicial de documentos.
