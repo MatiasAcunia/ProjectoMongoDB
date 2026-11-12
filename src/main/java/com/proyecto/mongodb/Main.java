@@ -1,4 +1,4 @@
-package org.example;
+package com.proyecto.mongodb;
 
 import com.mongodb.client.*;
 import com.mongodb.client.model.Filters;
