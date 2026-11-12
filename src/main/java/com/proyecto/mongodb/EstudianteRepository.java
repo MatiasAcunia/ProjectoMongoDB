@@ -12,6 +12,7 @@ import org.bson.conversions.Bson;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 class EstudianteRepository {
 
@@ -200,6 +201,20 @@ class EstudianteRepository {
     public void registrarEstudiante(String nombre, String apellido, String email, int edad,
                                     String ciudad, String departamento, Date fechaRegistro,
                                     List<String> cursosCodigos) {
+        if (nombre == null || nombre.isBlank() || apellido == null || apellido.isBlank()
+                || email == null || email.isBlank() || edad <= 0
+                || ciudad == null || ciudad.isBlank()
+                || departamento == null || departamento.isBlank() || fechaRegistro == null) {
+            System.out.println("Datos de estudiante inválidos.");
+            return;
+        }
+
+        email = email.trim().toLowerCase(Locale.ROOT);
+        if (buscarEstudiantePorEmail(email) != null) {
+            System.out.println("El correo ya está registrado.");
+            return;
+        }
+
         Document estudiante = new Document("_id", new ObjectId())
                 .append("Nombre", nombre)
                 .append("Apellido", apellido)
@@ -227,13 +242,20 @@ class EstudianteRepository {
 
     // 3. Buscar un estudiante por correo electrónico
     public Document buscarEstudiantePorEmail(String email) {
-        Bson filtro = Filters.eq("Email", email);
+        if (email == null || email.isBlank()) {
+            return null;
+        }
+        Bson filtro = Filters.eq("Email", email.trim().toLowerCase(Locale.ROOT));
         return estudiantes.find(filtro).first();
     }
 
     // 4. Modificar la edad de un estudiante (buscando por correo electrónico)
     public void modificarEdadEstudiante(String email, int nuevaEdad) {
-        Bson filtro = Filters.eq("Email", email);
+        if (email == null || email.isBlank() || nuevaEdad <= 0) {
+            System.out.println("Datos inválidos.");
+            return;
+        }
+        Bson filtro = Filters.eq("Email", email.trim().toLowerCase(Locale.ROOT));
         Bson actualizacion = Updates.set("Edad", nuevaEdad);
 
         var resultado = estudiantes.updateOne(filtro, actualizacion);
@@ -248,6 +270,12 @@ class EstudianteRepository {
 
     // 5. Eliminar un estudiante por correo electrónico, previa confirmación
     public void eliminarEstudiante(String email, boolean confirmacion) {
+        if (email == null || email.isBlank()) {
+            System.out.println("Correo inválido.");
+            return;
+        }
+        email = email.trim().toLowerCase(Locale.ROOT);
+
         if (!confirmacion) {
             System.out.println("Operación cancelada: Se requiere confirmación para eliminar al estudiante.");
             return;

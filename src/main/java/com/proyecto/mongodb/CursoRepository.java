@@ -11,6 +11,7 @@ import org.bson.types.ObjectId;
 import java.util.Date;
 import java.util.List;
 import java.time.Instant;
+import java.util.Locale;
 class CursoRepository {
 
     private MongoCollection<Document> cursos;
@@ -72,6 +73,19 @@ class CursoRepository {
     }
 
     public void registrarCurso(String codigo, String nombre, String descrpicion, int cantcreditos, int cuposmax, Date fechainicio){
+        if (codigo == null || codigo.isBlank() || nombre == null || nombre.isBlank()
+                || descrpicion == null || descrpicion.isBlank() || cantcreditos <= 0
+                || cuposmax <= 0 || fechainicio == null) {
+            System.out.println("Datos de curso inválidos.");
+            return;
+        }
+
+        codigo = codigo.trim().toUpperCase(Locale.ROOT);
+        if (buscarCurso(codigo) != null) {
+            System.out.println("Ya existe un curso con ese código.");
+            return;
+        }
+
         Document curso1 = new Document("_id", new ObjectId())
                 .append("Codigo", codigo)
                 .append("Nombre", nombre)
@@ -95,12 +109,24 @@ class CursoRepository {
     }
 
     public Document buscarCurso(String codigo) {
-        return cursos.find(Filters.eq("Codigo", codigo)).first();
+        if (codigo == null || codigo.isBlank()) {
+            return null;
+        }
+        return cursos.find(Filters.eq("Codigo", codigo.trim().toUpperCase(Locale.ROOT))).first();
     }
 
     public void modificarCreditos(String codigo, int creditos){
-        cursos.updateOne(
-                Filters.eq("Codigo", codigo),
-                Updates.set("CantCreditos", creditos));
+        if (creditos <= 0) {
+            System.out.println("La cantidad de créditos debe ser mayor a cero.");
+            return;
+        }
+
+        Document curso = buscarCurso(codigo);
+        if (curso == null) {
+            System.out.println("No se encontró el curso.");
+            return;
+        }
+
+        cursos.updateOne(Filters.eq("_id", curso.get("_id")), Updates.set("CantCreditos", creditos));
     }
 }
