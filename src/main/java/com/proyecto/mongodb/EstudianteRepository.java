@@ -196,10 +196,12 @@ class EstudianteRepository {
         Bson actualizacion = Updates.set("Edad", nuevaEdad);
 
         var resultado = estudiantes.updateOne(filtro, actualizacion);
-        if (resultado.getModifiedCount() > 0) {
-            System.out.println("Edad actualizada exitosamente para el correo: " + email);
+        if (resultado.getMatchedCount() == 0) {
+            System.out.println("No se encontró el estudiante.");
+        } else if (resultado.getModifiedCount() == 0) {
+            System.out.println("El estudiante ya tiene esa edad.");
         } else {
-            System.out.println("No se encontró el estudiante o la edad es la misma.");
+            System.out.println("Edad actualizada correctamente.");
         }
     }
 
