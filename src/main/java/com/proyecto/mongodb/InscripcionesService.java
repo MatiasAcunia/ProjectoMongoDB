@@ -30,14 +30,14 @@ public class InscripcionesService {
             return;
         }
 
-        List<ObjectId> cursosUsuario = usuario.getList("Cursos", ObjectId.class);
+        List<String> cursosUsuario = usuario.getList("cursosInscriptos", String.class);
         if (cursosUsuario == null || cursosUsuario.isEmpty()) {
             System.out.println("El estudiante no tiene cursos registrados.");
             return;
         }
 
-        for (ObjectId idCurso : cursosUsuario) {
-            Document curso = cursos.find(Filters.eq("_id", idCurso)).first();
+        for (String codigo : cursosUsuario) {
+            Document curso = cursos.find(Filters.eq("Codigo", codigo)).first();
             if (curso != null) {
                 System.out.println(curso.toJson());
             }

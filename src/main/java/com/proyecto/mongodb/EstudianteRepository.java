@@ -26,19 +26,14 @@ class EstudianteRepository {
 
 
     public void cargarDatosPorDefecto() {
-        // Obtenemos los cursos existentes en la BD para asociar sus _id reales
-        List<Document> listaCursos = cursos.find().into(new ArrayList<>());
-        if (listaCursos.isEmpty()) {
-            System.out.println("No hay cursos registrados para asociar a los estudiantes.");
-            return;
-        }
+        migrarCursosInscriptos();
 
-        // Tomamos referencias de IDs de los cursos disponibles (si hay menos de 5, se reutilizan de forma segura)
-        ObjectId id1 = listaCursos.get(0).getObjectId("_id");
-        ObjectId id2 = listaCursos.size() > 1 ? listaCursos.get(1).getObjectId("_id") : id1;
-        ObjectId id3 = listaCursos.size() > 2 ? listaCursos.get(2).getObjectId("_id") : id1;
-        ObjectId id4 = listaCursos.size() > 3 ? listaCursos.get(3).getObjectId("_id") : id1;
-        ObjectId id5 = listaCursos.size() > 4 ? listaCursos.get(4).getObjectId("_id") : id1;
+        for (String codigo : List.of("CUR01", "CUR02", "CUR03", "CUR04", "CUR05")) {
+            if (cursos.find(Filters.eq("Codigo", codigo)).first() == null) {
+                System.out.println("No hay cursos registrados para asociar a los estudiantes.");
+                return;
+            }
+        }
 
         Date fechaRegistro = new Date();
 
@@ -51,7 +46,7 @@ class EstudianteRepository {
                         .append("Direccion", new Document("ciudad", "Punta Carretas")
                                 .append("Departamento", "Montevideo"))
                         .append("FechaRegistro", fechaRegistro)
-                        .append("Cursos", List.of(id1, id2, id3)),
+                        .append("cursosInscriptos", List.of("CUR01", "CUR02", "CUR03")),
 
                 new Document("Nombre", "Pablo")
                         .append("Apellido", "Millon")
@@ -61,7 +56,7 @@ class EstudianteRepository {
                         .append("Direccion", new Document("ciudad", "Ciudad Vieja")
                                 .append("Departamento", "Montevideo"))
                         .append("FechaRegistro", fechaRegistro)
-                        .append("Cursos", List.of(id2, id3, id4)),
+                        .append("cursosInscriptos", List.of("CUR02", "CUR03", "CUR04")),
 
                 new Document("Nombre", "Francisco")
                         .append("Apellido", "Gonzalez")
@@ -71,7 +66,7 @@ class EstudianteRepository {
                         .append("Direccion", new Document("ciudad", "Sayago")
                                 .append("Departamento", "Montevideo"))
                         .append("FechaRegistro", fechaRegistro)
-                        .append("Cursos", List.of(id1, id2, id5)),
+                        .append("cursosInscriptos", List.of("CUR01", "CUR02", "CUR05")),
 
                 new Document("Nombre", "Jorge")
                         .append("Apellido", "Galemire")
@@ -81,7 +76,7 @@ class EstudianteRepository {
                         .append("Direccion", new Document("ciudad", "Cordon")
                                 .append("Departamento", "Montevideo"))
                         .append("FechaRegistro", fechaRegistro)
-                        .append("Cursos", List.of(id3, id4)),
+                        .append("cursosInscriptos", List.of("CUR03", "CUR04")),
 
                 new Document("Nombre", "Eduardo")
                         .append("Apellido", "Mateo")
@@ -91,7 +86,7 @@ class EstudianteRepository {
                         .append("Direccion", new Document("ciudad", "Pocitos")
                                 .append("Departamento", "Montevideo"))
                         .append("FechaRegistro", fechaRegistro)
-                        .append("Cursos", List.of(id1, id2)),
+                        .append("cursosInscriptos", List.of("CUR01", "CUR02")),
 
                 new Document("Nombre", "Gonzalo")
                         .append("Apellido", "Bergessio")
@@ -101,7 +96,7 @@ class EstudianteRepository {
                         .append("Direccion", new Document("ciudad", "Malvin")
                                 .append("Departamento", "Montevideo"))
                         .append("FechaRegistro", fechaRegistro)
-                        .append("Cursos", List.of(id4, id5)),
+                        .append("cursosInscriptos", List.of("CUR04", "CUR05")),
 
                 new Document("Nombre", "Jimena")
                         .append("Apellido", "Gomez")
@@ -111,7 +106,7 @@ class EstudianteRepository {
                         .append("Direccion", new Document("ciudad", "Goes")
                                 .append("Departamento", "Montevideo"))
                         .append("FechaRegistro", fechaRegistro)
-                        .append("Cursos", List.of(id1, id4)),
+                        .append("cursosInscriptos", List.of("CUR01", "CUR04")),
 
                 new Document("Nombre", "Ana")
                         .append("Apellido", "Perez")
@@ -121,7 +116,7 @@ class EstudianteRepository {
                         .append("Direccion", new Document("ciudad", "Aguada")
                                 .append("Departamento", "Montevideo"))
                         .append("FechaRegistro", fechaRegistro)
-                        .append("Cursos", List.of(id4, id5)),
+                        .append("cursosInscriptos", List.of("CUR04", "CUR05")),
 
                 new Document("Nombre", "Camila")
                         .append("Apellido", "Rodriguez")
@@ -131,7 +126,7 @@ class EstudianteRepository {
                         .append("Direccion", new Document("ciudad", "Las Piedras")
                                 .append("Departamento", "Canelones"))
                         .append("FechaRegistro", fechaRegistro)
-                        .append("Cursos", List.of(id2, id4)),
+                        .append("cursosInscriptos", List.of("CUR02", "CUR04")),
 
                 new Document("Nombre", "Martin")
                         .append("Apellido", "Fernandez")
@@ -141,7 +136,7 @@ class EstudianteRepository {
                         .append("Direccion", new Document("ciudad", "Maldonado")
                                 .append("Departamento", "Maldonado"))
                         .append("FechaRegistro", fechaRegistro)
-                        .append("Cursos", List.of(id1, id3))
+                        .append("cursosInscriptos", List.of("CUR01", "CUR03"))
         );
 
         int insertados = 0;
@@ -155,10 +150,56 @@ class EstudianteRepository {
         System.out.println("Cantidad de estudiantes insertados: " + insertados);
     }
 
+    public void migrarCursosInscriptos() {
+        for (Document estudiante : estudiantes.find(Filters.exists("Cursos"))) {
+            List<?> referencias = estudiante.getList("Cursos", Object.class);
+            if (referencias == null) {
+                continue;
+            }
+
+            List<String> codigos = new ArrayList<>();
+            if (estudiante.containsKey("cursosInscriptos")) {
+                List<String> existentes = estudiante.getList("cursosInscriptos", String.class);
+                if (existentes != null) {
+                    codigos.addAll(existentes);
+                }
+            }
+
+            boolean completo = true;
+            for (Object referencia : referencias) {
+                if (!(referencia instanceof ObjectId id)) {
+                    completo = false;
+                    break;
+                }
+
+                Document curso = cursos.find(Filters.eq("_id", id)).first();
+                if (curso == null || curso.getString("Codigo") == null) {
+                    completo = false;
+                    break;
+                }
+
+                String codigo = curso.getString("Codigo");
+                if (!codigos.contains(codigo)) {
+                    codigos.add(codigo);
+                }
+            }
+
+            if (completo) {
+                estudiantes.updateOne(
+                        Filters.eq("_id", estudiante.get("_id")),
+                        Updates.combine(
+                                Updates.set("cursosInscriptos", codigos),
+                                Updates.unset("Cursos")
+                        )
+                );
+            }
+        }
+    }
+
     // 1. Registrar un estudiante
     public void registrarEstudiante(String nombre, String apellido, String email, int edad,
                                     String ciudad, String departamento, Date fechaRegistro,
-                                    List<ObjectId> cursosIds) {
+                                    List<String> cursosCodigos) {
         Document estudiante = new Document("_id", new ObjectId())
                 .append("Nombre", nombre)
                 .append("Apellido", apellido)
@@ -168,7 +209,7 @@ class EstudianteRepository {
                 .append("Direccion", new Document("ciudad", ciudad)
                         .append("Departamento", departamento))
                 .append("FechaRegistro", fechaRegistro)
-                .append("Cursos", cursosIds != null ? cursosIds : List.of());
+                .append("cursosInscriptos", cursosCodigos != null ? cursosCodigos : List.of());
 
         InsertOneResult resultado = estudiantes.insertOne(estudiante);
         System.out.println("Estudiante registrado con ID: " + resultado.getInsertedId());
