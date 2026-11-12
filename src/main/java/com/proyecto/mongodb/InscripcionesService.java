@@ -4,8 +4,8 @@ import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.model.Filters;
+import com.mongodb.client.model.Updates;
 import org.bson.Document;
-import org.bson.types.ObjectId;
 
 import java.util.List;
 
@@ -53,26 +53,46 @@ public class InscripcionesService {
         Conexion.cerrarConexion();
     }
 
-    public void consultarCursosEstudiante(String id) {
-        if (!ObjectId.isValid(id)) {
-            System.out.println("ID de estudiante inválido.");
-            return;
-        }
-
-        Document usuario = estudiantes.find(Filters.eq("_id", new ObjectId(id))).first();
-        if (usuario == null) {
+    public void inscribirEstudiante(String email, String codigo) {
+        Document estudiante = estudianteRepository.buscarEstudiantePorEmail(email);
+        if (estudiante == null) {
             System.out.println("No se encontró el estudiante.");
             return;
         }
 
-        List<String> cursosUsuario = usuario.getList("cursosInscriptos", String.class);
-        if (cursosUsuario == null || cursosUsuario.isEmpty()) {
+        Document curso = cursoRepository.buscarCurso(codigo);
+        if (curso == null) {
+            System.out.println("No se encontró el curso.");
+            return;
+        }
+
+        var resultado = estudiantes.updateOne(
+                Filters.eq("_id", estudiante.get("_id")),
+                Updates.addToSet("cursosInscriptos", curso.getString("Codigo"))
+        );
+
+        if (resultado.getModifiedCount() == 0) {
+            System.out.println("El estudiante ya está inscrito en ese curso.");
+        } else {
+            System.out.println("Estudiante inscrito correctamente.");
+        }
+    }
+
+    public void consultarCursosEstudiante(String email) {
+        Document estudiante = estudianteRepository.buscarEstudiantePorEmail(email);
+        if (estudiante == null) {
+            System.out.println("No se encontró el estudiante.");
+            return;
+        }
+
+        List<String> codigos = estudiante.getList("cursosInscriptos", String.class);
+        if (codigos == null || codigos.isEmpty()) {
             System.out.println("El estudiante no tiene cursos registrados.");
             return;
         }
 
-        for (String codigo : cursosUsuario) {
-            Document curso = cursos.find(Filters.eq("Codigo", codigo)).first();
+        for (String codigo : codigos) {
+            Document curso = cursoRepository.buscarCurso(codigo);
             if (curso != null) {
                 System.out.println(curso.toJson());
             }
