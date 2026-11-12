@@ -9,6 +9,7 @@ import org.bson.Document;
 import org.bson.types.ObjectId;
 
 import java.util.Date;
+import java.util.List;
 import java.time.Instant;
 class CursoRepository {
 
@@ -63,19 +64,10 @@ class CursoRepository {
                 .append("Estado", false)
                 .append("FechaInicio", Date.from(Instant.parse("2026-09-07T00:00:00Z")));
 
-        if (cursos.countDocuments() == 0) {
-            InsertOneResult resultado1 = cursos.insertOne(curso1);
-            InsertOneResult resultado2 = cursos.insertOne(curso2);
-            InsertOneResult resultado3 = cursos.insertOne(curso3);
-            InsertOneResult resultado4 = cursos.insertOne(curso4);
-            InsertOneResult resultado5 = cursos.insertOne(curso5);
-            System.out.println(resultado1.getInsertedId());
-            System.out.println(resultado2.getInsertedId());
-            System.out.println(resultado3.getInsertedId());
-            System.out.println(resultado4.getInsertedId());
-            System.out.println(resultado5.getInsertedId());
-        } else {
-            System.out.println("Los cursos ya estaban cargados");
+        for (Document curso : List.of(curso1, curso2, curso3, curso4, curso5)) {
+            if (cursos.find(Filters.eq("Codigo", curso.getString("Codigo"))).first() == null) {
+                cursos.insertOne(curso);
+            }
         }
     }
 
