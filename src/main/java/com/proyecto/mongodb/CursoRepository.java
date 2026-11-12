@@ -7,23 +7,17 @@ import com.mongodb.client.model.Updates;
 import com.mongodb.client.result.InsertOneResult;
 import org.bson.Document;
 import org.bson.types.ObjectId;
-import org.bson.conversions.Bson;
 
 import java.util.Date;
 import java.time.Instant;
-
-//accedo a curso_nosql
 class CursoRepository {
 
     private MongoCollection<Document> cursos;
-
-    // Constructor para inicializar la colección (ejemplo)
     public CursoRepository(MongoCollection<Document> cursos) {
         this.cursos = cursos;
     }
 
     public void defecto() {
-        //creo los documentos reservando memoria
         Document curso1 = new Document("_id", new ObjectId())
                 .append("Codigo", "CUR01")
                 .append("Nombre", "Programación Java")
@@ -70,14 +64,11 @@ class CursoRepository {
                 .append("FechaInicio", Date.from(Instant.parse("2026-09-07T00:00:00Z")));
 
         if (cursos.countDocuments() == 0) {
-            //inserto los cursos almacenandolos en una variable
             InsertOneResult resultado1 = cursos.insertOne(curso1);
             InsertOneResult resultado2 = cursos.insertOne(curso2);
             InsertOneResult resultado3 = cursos.insertOne(curso3);
             InsertOneResult resultado4 = cursos.insertOne(curso4);
             InsertOneResult resultado5 = cursos.insertOne(curso5);
-
-            //imprime los _id generados
             System.out.println(resultado1.getInsertedId());
             System.out.println(resultado2.getInsertedId());
             System.out.println(resultado3.getInsertedId());
@@ -103,7 +94,6 @@ class CursoRepository {
     }
 
     public void listarCursos(){
-        //recorro con cursor documento por documento
         try (MongoCursor<Document> cursor = cursos.find().iterator()) {
             while (cursor.hasNext()) {
                 Document curso = cursor.next();
@@ -112,16 +102,13 @@ class CursoRepository {
         }
     }
 
-    public Document buscarCurso(String id) {
-        //construye el filtro
-        Bson filtro = Filters.eq("_id", new ObjectId(id));
-        //retorna el documento
-        return cursos.find(filtro).first();
+    public Document buscarCurso(String codigo) {
+        return cursos.find(Filters.eq("Codigo", codigo)).first();
     }
 
-    public void modificarCreditos(String id, int creditos){
+    public void modificarCreditos(String codigo, int creditos){
         cursos.updateOne(
-                Filters.eq("_id", new ObjectId(id)),
+                Filters.eq("Codigo", codigo),
                 Updates.set("CantCreditos", creditos));
     }
 }
