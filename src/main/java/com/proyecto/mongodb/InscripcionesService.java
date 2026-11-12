@@ -1,54 +1,58 @@
 package com.proyecto.mongodb;
 
-import com.mongodb.client.*;
+import com.mongodb.client.FindIterable;
+import com.mongodb.client.MongoCollection;
 import com.mongodb.client.model.Filters;
 import org.bson.Document;
-import com.mongodb.client.model.Projections;
-import org.bson.conversions.Bson;
-import com.mongodb.client.MongoCursor;
-import com.mongodb.client.model.Updates;
-import com.mongodb.client.result.UpdateResult;
+import org.bson.types.ObjectId;
 
+import java.util.List;
 
-public void consultarCursosEstudiante(String id){
-    //Encuentra el primer usuario coincidente
-    Document usuario = estudiantes.find("_id", id).first();
+public class InscripcionesService {
 
-    //obtengo la lista de cursos de usuario
-    List<ObjectId> cursosUsuario = usuario.getList("Cursos", ObjectId.class);
+    private final MongoCollection<Document> estudiantes;
+    private final MongoCollection<Document> cursos;
 
-    //recorro la lista de cursos de usuario
-    for (ObjectId idCurso : cursosUsuario) {
-        //recupero el curso evaluado
-        Document curso = cursos.find(Filters.eq("_id", idCurso)).first();
+    public InscripcionesService(MongoCollection<Document> estudiantes, MongoCollection<Document> cursos) {
+        this.estudiantes = estudiantes;
+        this.cursos = cursos;
+    }
 
-        //imprimo el curso evaluado
-        System.out.println(curso.toJson());
+    public void consultarCursosEstudiante(String id) {
+        if (!ObjectId.isValid(id)) {
+            System.out.println("ID de estudiante inválido.");
+            return;
+        }
+
+        Document usuario = estudiantes.find(Filters.eq("_id", new ObjectId(id))).first();
+        if (usuario == null) {
+            System.out.println("No se encontró el estudiante.");
+            return;
+        }
+
+        List<ObjectId> cursosUsuario = usuario.getList("Cursos", ObjectId.class);
+        if (cursosUsuario == null || cursosUsuario.isEmpty()) {
+            System.out.println("El estudiante no tiene cursos registrados.");
+            return;
+        }
+
+        for (ObjectId idCurso : cursosUsuario) {
+            Document curso = cursos.find(Filters.eq("_id", idCurso)).first();
+            if (curso != null) {
+                System.out.println(curso.toJson());
+            }
+        }
+    }
+
+    public void buscarEstudiantesPorCiudad(String ciudad) {
+        estudiantes.find(Filters.eq("Direccion.ciudad", ciudad))
+                .forEach(estudiante -> System.out.println(estudiante.toJson()));
+    }
+
+    public void BuscarEstudiantesPorCoincidencia(String coincidencia) {
+        FindIterable<Document> estudiantesIT = estudiantes.find(Filters.regex("Apellido", coincidencia, "i"));
+        for (Document estudiante : estudiantesIT) {
+            System.out.println(estudiante.toJson());
+        }
     }
 }
-
-public void buscarEstudiantesPorCiudad(String ciudad){
-    //creo filtro con la ciudad indicada
-    Bson filtro = Filters.eq("Direccion.ciudad", ciudad);
-
-    //recupero cada estudiante con el filtro aplicado
-    estudiante.find(filtro)
-            .forEach(estudiante →
-                    System.out.println(estudiante.toJson()));
-}
-
-
-public void BuscarEstudiantesPorCoincidencia(String coincidencia){
-    //creo filtro con la coincidencia indicada
-    Bson filtro = Filters.regex("Apellido", coincidencia, "i");
-
-    //obtengo los estudiantes que cumplen el filtro
-    FindIterable<Document> estudiantesIT = estudiantes.find(filtro);
-
-    //imprimo cada estudiante
-    for (Document estudiante : estudiantesIT) {
-        System.out.println(estudiante.toJson());
-    }
-}
-
-

@@ -1,0 +1,87 @@
+%PDF-1.4
+%‚„œ”
+1 0 obj
+<< /Type /Catalog /Pages 2 0 R >>
+endobj
+2 0 obj
+<< /Type /Pages /Kids [3 0 R 5 0 R] /Count 2 >>
+endobj
+3 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 595 842] /Resources << /Font << /F1 7 0 R /F2 8 0 R >> >> /Contents 4 0 R >>
+endobj
+4 0 obj
+<< /Length 2006 >>
+stream
+BT /F2 18 Tf 45 793 Td (SISTEMA DE GESTION ACADEMICA) Tj ET
+BT /F1 11 Tf 45 767 Td (Proyecto final NoSQL - Documento tecnico provisional) Tj ET
+BT /F2 13 Tf 45 739 Td (1. Objetivo) Tj ET
+BT /F1 10 Tf 45 718 Td (Aplicacion de consola Java 21 para administrar estudiantes, cursos e inscripciones mediante) Tj ET
+BT /F1 10 Tf 45 702 Td (MongoDB.) Tj ET
+BT /F1 10 Tf 45 686 Td (Construida con Maven y el driver sincronico oficial MongoDB Java 5.13.0.) Tj ET
+BT /F2 13 Tf 45 658 Td (2. Arquitectura de codigo) Tj ET
+BT /F1 10 Tf 45 637 Td (Conexion: inicializa y cierra el cliente MongoDB.) Tj ET
+BT /F1 10 Tf 45 621 Td (CursoRepository: inserta, lista, busca y modifica cursos; tambien ofrece datos por defecto.) Tj ET
+BT /F1 10 Tf 45 605 Td (EstudianteRepository: inserta, lista, busca, modifica y elimina estudiantes; precarga datos.) Tj ET
+BT /F1 10 Tf 45 589 Td (InscripcionesService: consultas en preparacion para relaciones estudiante-curso y filtros.) Tj ET
+BT /F1 10 Tf 45 573 Td (CargarDatos: ejecutable independiente que inicializa los datos en MongoDB.) Tj ET
+BT /F1 10 Tf 45 557 Td (Main: menu principal de consola aun pendiente.) Tj ET
+BT /F2 13 Tf 45 529 Td (3. Estructura documental actual) Tj ET
+BT /F1 10 Tf 45 508 Td (Coleccion estudiantes: Nombre, Apellido, Email, Edad, Estado, Direccion, FechaRegistro,) Tj ET
+BT /F1 10 Tf 45 492 Td (Cursos.) Tj ET
+BT /F1 10 Tf 45 476 Td (Direccion es un documento embebido con ciudad y Departamento; Cursos es un array de ObjectId.) Tj ET
+BT /F1 10 Tf 45 460 Td (Coleccion cursos: Codigo, Nombre, Descripcion, CantCreditos, CuposMax, Estado, FechaInicio.) Tj ET
+BT /F1 10 Tf 45 444 Td (FechaRegistro y FechaInicio se almacenan como BSON Date.) Tj ET
+BT /F2 13 Tf 45 416 Td (4. Decision de modelado pendiente) Tj ET
+BT /F1 10 Tf 45 395 Td (El enunciado exige cursosInscriptos con codigos de curso. La implementacion actual usa Cursos) Tj ET
+BT /F1 10 Tf 45 379 Td (con ObjectId. Esta diferencia debe corregirse antes de entregar el proyecto final.) Tj ET
+endstream
+endobj
+5 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 595 842] /Resources << /Font << /F1 7 0 R /F2 8 0 R >> >> /Contents 6 0 R >>
+endobj
+6 0 obj
+<< /Length 1764 >>
+stream
+BT /F2 18 Tf 45 793 Td (EJECUCION Y ESTADO DE ENTREGA) Tj ET
+BT /F2 13 Tf 45 755 Td (5. Requisitos) Tj ET
+BT /F1 10 Tf 45 734 Td (JDK 21, Maven, servidor MongoDB y acceso desde el entorno de desarrollo.) Tj ET
+BT /F1 10 Tf 45 718 Td (Conexion: variable MONGODB_URI, por defecto mongodb://localhost:27017.) Tj ET
+BT /F1 10 Tf 45 702 Td (Base: variable MONGODB_DATABASE, por defecto gestion_academica.) Tj ET
+BT /F2 13 Tf 45 674 Td (6. Instrucciones de ejecucion) Tj ET
+BT /F1 10 Tf 45 653 Td (En el directorio raiz, ejecutar: mvn clean verify) Tj ET
+BT /F1 10 Tf 45 637 Td (Para cargar datos: mvn exec:java -Dexec.mainClass=com.proyecto.mongodb.CargarDatos) Tj ET
+BT /F1 10 Tf 45 621 Td (La precarga incorpora correos faltantes sin reemplazar estudiantes existentes.) Tj ET
+BT /F1 10 Tf 45 605 Td (Los cinco cursos solo se crean si la coleccion de cursos esta vacia.) Tj ET
+BT /F2 13 Tf 45 577 Td (7. Datos de demostracion) Tj ET
+BT /F1 10 Tf 45 556 Td (Hay 10 estudiantes de ejemplo, 5 cursos y mas de 8 inscripciones por referencias.) Tj ET
+BT /F1 10 Tf 45 540 Td (Se incluyen estados activos/inactivos, direcciones variadas y fechas de cursos distintas.) Tj ET
+BT /F1 10 Tf 45 524 Td (Los documentos existentes no son modificados por la precarga.) Tj ET
+BT /F2 13 Tf 45 496 Td (8. Requerimientos y evidencias pendientes) Tj ET
+BT /F1 10 Tf 45 475 Td (Menu de consola, inscripcion por codigo, consultas restantes y validaciones completas.) Tj ET
+BT /F1 10 Tf 45 459 Td (Probar compilacion, conexion real, CRUD e inscripciones en MongoDB.) Tj ET
+BT /F1 10 Tf 45 443 Td (Obtener capturas de MongoDB Compass de las colecciones y datos almacenados.) Tj ET
+BT /F1 10 Tf 45 415 Td (Documento provisional: actualizar al completar la implementacion y las pruebas.) Tj ET
+endstream
+endobj
+7 0 obj
+<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica >>
+endobj
+8 0 obj
+<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica-Bold >>
+endobj
+xref
+0 9
+0000000000 65535 f 
+0000000015 00000 n 
+0000000064 00000 n 
+0000000127 00000 n 
+0000000263 00000 n 
+0000002320 00000 n 
+0000002456 00000 n 
+0000004271 00000 n 
+0000004341 00000 n 
+trailer
+<< /Size 9 /Root 1 0 R >>
+startxref
+4416
+%%EOF

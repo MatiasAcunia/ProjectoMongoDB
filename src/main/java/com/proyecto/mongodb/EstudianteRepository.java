@@ -4,7 +4,6 @@ import com.mongodb.client.*;
 import com.mongodb.client.model.Filters;
 import com.mongodb.client.model.Updates;
 import com.mongodb.client.result.DeleteResult;
-import com.mongodb.client.result.InsertManyResult;
 import com.mongodb.client.result.InsertOneResult;
 import org.bson.Document;
 import org.bson.types.ObjectId;
@@ -27,11 +26,6 @@ class EstudianteRepository {
 
 
     public void cargarDatosPorDefecto() {
-        if (estudiantes.countDocuments() > 0) {
-            System.out.println("Los estudiantes ya estaban cargados");
-            return;
-        }
-
         // Obtenemos los cursos existentes en la BD para asociar sus _id reales
         List<Document> listaCursos = cursos.find().into(new ArrayList<>());
         if (listaCursos.isEmpty()) {
@@ -127,11 +121,38 @@ class EstudianteRepository {
                         .append("Direccion", new Document("ciudad", "Aguada")
                                 .append("Departamento", "Montevideo"))
                         .append("FechaRegistro", fechaRegistro)
-                        .append("Cursos", List.of(id4, id5))
+                        .append("Cursos", List.of(id4, id5)),
+
+                new Document("Nombre", "Camila")
+                        .append("Apellido", "Rodriguez")
+                        .append("Email", "camila@gmail.com")
+                        .append("Edad", 21)
+                        .append("Estado", true)
+                        .append("Direccion", new Document("ciudad", "Las Piedras")
+                                .append("Departamento", "Canelones"))
+                        .append("FechaRegistro", fechaRegistro)
+                        .append("Cursos", List.of(id2, id4)),
+
+                new Document("Nombre", "Martin")
+                        .append("Apellido", "Fernandez")
+                        .append("Email", "martin@gmail.com")
+                        .append("Edad", 27)
+                        .append("Estado", false)
+                        .append("Direccion", new Document("ciudad", "Maldonado")
+                                .append("Departamento", "Maldonado"))
+                        .append("FechaRegistro", fechaRegistro)
+                        .append("Cursos", List.of(id1, id3))
         );
 
-        InsertManyResult insertResultado = estudiantes.insertMany(estudiantesL);
-        System.out.println("Cantidad de estudiantes insertados: " + insertResultado.getInsertedIds().size());
+        int insertados = 0;
+        for (Document estudiante : estudiantesL) {
+            String email = estudiante.getString("Email");
+            if (estudiantes.find(Filters.eq("Email", email)).first() == null) {
+                estudiantes.insertOne(estudiante);
+                insertados++;
+            }
+        }
+        System.out.println("Cantidad de estudiantes insertados: " + insertados);
     }
 
     // 1. Registrar un estudiante

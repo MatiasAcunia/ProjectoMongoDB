@@ -10,6 +10,7 @@ import org.bson.types.ObjectId;
 import org.bson.conversions.Bson;
 
 import java.util.Date;
+import java.time.Instant;
 
 //accedo a curso_nosql
 class CursoRepository {
@@ -30,7 +31,7 @@ class CursoRepository {
                 .append("CantCreditos", 11)
                 .append("CuposMax", 30)
                 .append("Estado", true)
-                .append("FechaInicio", new Date());
+                .append("FechaInicio", Date.from(Instant.parse("2026-03-02T00:00:00Z")));
 
         Document curso2 = new Document("_id", new ObjectId())
                 .append("Codigo", "CUR02")
@@ -39,7 +40,7 @@ class CursoRepository {
                 .append("CantCreditos", 15)
                 .append("CuposMax", 35)
                 .append("Estado", true)
-                .append("FechaInicio", new Date());
+                .append("FechaInicio", Date.from(Instant.parse("2026-04-06T00:00:00Z")));
 
         Document curso3 = new Document("_id", new ObjectId())
                 .append("Codigo", "CUR03")
@@ -48,7 +49,7 @@ class CursoRepository {
                 .append("CantCreditos", 10)
                 .append("CuposMax", 29)
                 .append("Estado", true)
-                .append("FechaInicio", new Date());
+                .append("FechaInicio", Date.from(Instant.parse("2026-05-04T00:00:00Z")));
 
         Document curso4 = new Document("_id", new ObjectId())
                 .append("Codigo", "CUR04")
@@ -57,7 +58,7 @@ class CursoRepository {
                 .append("CantCreditos", 12)
                 .append("CuposMax", 15)
                 .append("Estado", false)
-                .append("FechaInicio", new Date());
+                .append("FechaInicio", Date.from(Instant.parse("2026-08-03T00:00:00Z")));
 
         Document curso5 = new Document("_id", new ObjectId())
                 .append("Codigo", "CUR05")
@@ -66,7 +67,7 @@ class CursoRepository {
                 .append("CantCreditos", 5)
                 .append("CuposMax", 25)
                 .append("Estado", false)
-                .append("FechaInicio", new Date());
+                .append("FechaInicio", Date.from(Instant.parse("2026-09-07T00:00:00Z")));
 
         if (cursos.countDocuments() == 0) {
             //inserto los cursos almacenandolos en una variable
