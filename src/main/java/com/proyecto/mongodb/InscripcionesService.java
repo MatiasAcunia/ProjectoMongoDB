@@ -1,12 +1,12 @@
 package com.proyecto.mongodb;
 
-import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.model.Filters;
 import com.mongodb.client.model.Updates;
 import org.bson.Document;
 
+import java.util.Date;
 import java.util.List;
 
 public class InscripcionesService {
@@ -99,15 +99,56 @@ public class InscripcionesService {
         }
     }
 
-    public void buscarEstudiantesPorCiudad(String ciudad) {
-        estudiantes.find(Filters.eq("Direccion.ciudad", ciudad))
-                .forEach(estudiante -> System.out.println(estudiante.toJson()));
+    public void registrarEstudiante(String nombre, String apellido, String email, int edad,
+                                   String ciudad, String departamento) {
+        estudianteRepository.registrarEstudiante(nombre, apellido, email, edad,
+                ciudad, departamento, new Date(), List.of());
     }
 
-    public void BuscarEstudiantesPorCoincidencia(String coincidencia) {
-        FindIterable<Document> estudiantesIT = estudiantes.find(Filters.regex("Apellido", coincidencia, "i"));
-        for (Document estudiante : estudiantesIT) {
-            System.out.println(estudiante.toJson());
-        }
+    public void listarEstudiantes() {
+        estudianteRepository.listarEstudiantes();
+    }
+
+    public void buscarEstudiantePorEmail(String email) {
+        Document estudiante = estudianteRepository.buscarEstudiantePorEmail(email);
+        System.out.println(estudiante == null ? "No se encontró el estudiante." : estudiante.toJson());
+    }
+
+    public void modificarEdadEstudiante(String email, int edad) {
+        estudianteRepository.modificarEdadEstudiante(email, edad);
+    }
+
+    public void eliminarEstudiante(String email, boolean confirmacion) {
+        estudianteRepository.eliminarEstudiante(email, confirmacion);
+    }
+
+    public void registrarCurso(String codigo, String nombre, String descripcion,
+                              int creditos, int cupo, Date fechaInicio) {
+        cursoRepository.registrarCurso(codigo, nombre, descripcion, creditos, cupo, fechaInicio);
+    }
+
+    public void listarCursos() {
+        cursoRepository.listarCursos();
+    }
+
+    public void buscarCurso(String codigo) {
+        Document curso = cursoRepository.buscarCurso(codigo);
+        System.out.println(curso == null ? "No se encontró el curso." : curso.toJson());
+    }
+
+    public void modificarCreditos(String codigo, int creditos) {
+        cursoRepository.modificarCreditos(codigo, creditos);
+    }
+
+    public void buscarMayoresDe(int edad) {
+        estudianteRepository.buscarMayoresDe(edad);
+    }
+
+    public void buscarEstudiantesPorCiudad(String ciudad) {
+        estudianteRepository.buscarEstudiantesPorCiudad(ciudad);
+    }
+
+    public void buscarEstudiantesPorApellido(String apellido) {
+        estudianteRepository.buscarEstudiantesPorApellido(apellido);
     }
 }
