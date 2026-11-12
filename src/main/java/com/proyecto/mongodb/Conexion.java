@@ -1,42 +1,38 @@
 package com.proyecto.mongodb;
 
-import com.mongodb.client.*;
-import com.mongodb.client.model.Filters;
+import com.mongodb.client.MongoClient;
+import com.mongodb.client.MongoClients;
+import com.mongodb.client.MongoDatabase;
 import org.bson.Document;
-import com.mongodb.client.model.Projections;
-import org.bson.conversions.Bson;
-import com.mongodb.client.MongoCursor;
-import com.mongodb.client.model.Updates;
-import com.mongodb.client.result.UpdateResult;
 
 public class Conexion {
 
-    // En Java se usa 'private static final' para constantes
-    private static final String URI = System.getenv("MONGODB_URI") != null
-            ? System.getenv("MONGODB_URI")
-            : "mongodb://localhost:27017";
-
-    private static MongoClient client = null;
+    private static MongoClient client;
 
     public static MongoClient getConexion() {
-
         if (client != null) {
             return client;
         }
 
+        String uri = System.getenv("MONGODB_URI");
+        if (uri == null || uri.isBlank()) {
+            uri = "mongodb://localhost:27017";
+        }
+
         try {
-
-            client = MongoClients.create(URI);
-
-            System.out.println("Conexión exitosa a MongoDB");
-
+            client = MongoClients.create(uri);
+            client.getDatabase("admin").runCommand(new Document("ping", 1));
             return client;
-
         } catch (Exception e) {
-            client = null;
+            cerrarConexion();
             System.err.println("Error al conectar a MongoDB: " + e.getMessage());
             return null;
         }
+    }
+
+    public static MongoDatabase getDatabase(String nombre) {
+        MongoClient conexion = getConexion();
+        return conexion == null ? null : conexion.getDatabase(nombre);
     }
 
     public static void cerrarConexion() {
@@ -44,10 +40,5 @@ public class Conexion {
             client.close();
             client = null;
         }
-    }
-
-    public MongoDatabase getDatabase(String db){
-
-        return client.getDatabase(db);
     }
 }
