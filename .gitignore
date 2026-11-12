@@ -1,1 +1,15 @@
+# Maven
 target/
+
+# IntelliJ IDEA
+.idea/
+*.iml
+out/
+
+# Local secrets / configuration
+.env
+.env.*
+!.env.example
+
+# Local logs
+*.log
